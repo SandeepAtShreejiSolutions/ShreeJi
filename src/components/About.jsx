@@ -1,21 +1,21 @@
 import React from 'react';
-import { Target, TrendingUp, Zap } from 'lucide-react';
+import { BrainCircuit, Workflow, Lightbulb } from 'lucide-react';
 
 const features = [
   {
-    icon: <Target className="text-gradient" size={32} />,
-    title: "Precision Targeting",
-    description: "We identify and engage your ideal audience using data-driven insights and advanced analytics."
+    icon: <BrainCircuit className="text-gradient" size={32} />,
+    title: "AI shaped around your work",
+    description: "We connect AI to your business knowledge, customers, and processes so each solution addresses a specific need."
   },
   {
-    icon: <Zap className="text-gradient" size={32} />,
-    title: "Technical Excellence",
-    description: "From blazing-fast websites to robust web applications, we build the foundation for your digital success."
+    icon: <Workflow className="text-gradient" size={32} />,
+    title: "Software built for real workflows",
+    description: "From e-commerce and mobile apps to web platforms and integrations, we build practical software with AI where it adds value."
   },
   {
-    icon: <TrendingUp className="text-gradient" size={32} />,
-    title: "Scalable Growth",
-    description: "Our marketing strategies are designed not just for immediate gains, but for sustainable, long-term expansion."
+    icon: <Lightbulb className="text-gradient" size={32} />,
+    title: "Human-led, responsibly applied",
+    description: "We pair automation with clear review, privacy-aware design, and human support for decisions that need judgment."
   }
 ];
 
@@ -25,7 +25,7 @@ const About = () => {
       <div style={{ textAlign: 'center', marginBottom: '4rem', maxWidth: '800px', margin: '0 auto' }}>
         <h2 className="section-title animate-fade-in" style={{ marginBottom: '1.5rem' }}>Who We Are</h2>
         <p className="text-muted animate-fade-in delay-100" style={{ fontSize: '1.125rem' }}>
-          Shree Ji Solution bridges the gap between creative marketing and technical execution. We believe going digital is more than just having a website—it's about creating an entire ecosystem that promotes your brand 24/7.
+          ShreeG Solutions helps businesses apply AI throughout software development and digital operations. We plan, design, and build solutions such as AI-enabled e-commerce, business-specific AI fine-tuning, marketing tools, mobile apps, and custom products—always starting with the problem the software should solve.
         </p>
       </div>
 

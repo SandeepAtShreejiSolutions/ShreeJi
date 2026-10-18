@@ -1,44 +1,56 @@
-import React from 'react';
-import { ArrowRight, Sparkles } from 'lucide-react';
+import React, { useEffect, useState } from 'react';
+import { ArrowRight, ChevronLeft, ChevronRight, Sparkles } from 'lucide-react';
+import { useSiteContent } from '../context/ContentContext';
 
 const Hero = () => {
-  return (
-    <section className="section flex-center" style={{ minHeight: '100vh', position: 'relative', overflow: 'hidden' }}>
-      {/* Dynamic Background Elements */}
-      <div style={{
-        position: 'absolute', top: '-10%', left: '-10%', width: '40vw', height: '40vw',
-        background: 'radial-gradient(circle, rgba(124, 58, 237, 0.15) 0%, rgba(7, 9, 15, 0) 70%)',
-        filter: 'blur(60px)', zIndex: 0
-      }}></div>
-      <div style={{
-        position: 'absolute', bottom: '-20%', right: '-10%', width: '50vw', height: '50vw',
-        background: 'radial-gradient(circle, rgba(6, 182, 212, 0.1) 0%, rgba(7, 9, 15, 0) 70%)',
-        filter: 'blur(60px)', zIndex: 0
-      }}></div>
+  const { testimonials = [] } = useSiteContent();
+  const stories = testimonials.filter((item) => item.story_before || item.story_difference);
+  const [activeIndex, setActiveIndex] = useState(0);
 
-      <div className="container" style={{ position: 'relative', zIndex: 1, textAlign: 'center' }}>
-        <div className="animate-fade-in flex-center" style={{ marginBottom: '1.5rem' }}>
-          <span className="glass-panel" style={{ padding: '0.5rem 1rem', fontSize: '0.875rem', fontWeight: '500', color: 'var(--color-secondary)', display: 'inline-flex', alignItems: 'center', gap: '0.5rem', borderRadius: '999px' }}>
-            <Sparkles size={16} /> Welcome to the Future of Digital
-          </span>
+  useEffect(() => {
+    if (stories.length < 2 || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return undefined;
+    const timer = window.setInterval(() => setActiveIndex((current) => (current + 1) % stories.length), 2000);
+    return () => window.clearInterval(timer);
+  }, [stories.length]);
+
+  const move = (step) => setActiveIndex((current) => (current + step + stories.length) % stories.length);
+
+  return (
+    <section className="hero-section" id="home">
+      <div className="hero-glow hero-glow-blue" />
+      <div className="hero-glow hero-glow-orange" />
+      <div className="container hero-content">
+        <div className="animate-fade-in flex-center hero-badge-wrap">
+          <span className="glass-panel hero-badge"><Sparkles size={16} /> AI-enabled software for business</span>
         </div>
-        
-        <h1 className="animate-fade-in delay-100" style={{ fontSize: 'clamp(3rem, 6vw, 5rem)', marginBottom: '1.5rem', letterSpacing: '-0.03em' }}>
-          Elevate Your Brand with <br />
-          <span className="text-gradient">Shree Ji Solution</span>
-        </h1>
-        
-        <p className="text-muted animate-fade-in delay-200" style={{ fontSize: '1.25rem', maxWidth: '600px', margin: '0 auto 2.5rem', lineHeight: '1.8' }}>
-          We are a premium digital marketing agency providing cutting-edge technical solutions to skyrocket your online presence and drive measurable growth.
-        </p>
-        
-        <div className="flex-center animate-fade-in delay-300" style={{ gap: '1rem', flexWrap: 'wrap' }}>
-          <a href="#contact" className="btn btn-primary">
-            Start Your Journey <ArrowRight size={18} />
-          </a>
-          <a href="#services" className="btn btn-secondary">
-            Explore Services
-          </a>
+      </div>
+      {stories.length > 0 && <section className="container hero-story-carousel" aria-label="AI transformation stories">
+        <div className="hero-story-track" style={{ transform: `translateX(-${activeIndex * 100}%)` }}>
+          {stories.map((story) => <article className={`hero-story-slide${story.image_url ? ' has-image' : ' no-image'}`} key={story.id || story.slug}>
+            {story.image_url && <img className="hero-story-image" src={story.image_url} alt={story.image_alt || 'Illustrative AI software concept'} />}
+            <div className="hero-story-main">
+              <div className="hero-story-topline"><span className="hero-story-eyebrow"><Sparkles size={14} /> AI transformation story</span></div>
+              <p className="hero-story-persona">{story.author}{story.company ? ` · ${story.company}` : ''}</p>
+              <h2>{story.title}</h2>
+              <div className="hero-story-comparison">
+                <div className="hero-story-before"><span>BEFORE</span><p>{story.story_before}</p></div>
+                <div className="hero-story-after"><span>WITH AI</span><p>{story.story_difference}</p></div>
+              </div>
+              <a href={`/stories/${story.slug}`} className="hero-story-link">See the full story <ArrowRight size={15} /></a>
+            </div>
+          </article>)}
+        </div>
+        {stories.length > 1 && <div className="hero-story-controls">
+          <span className="hero-story-counter">{String(activeIndex + 1).padStart(2, '0')} <i /> {String(stories.length).padStart(2, '0')}</span>
+          <div className="hero-story-buttons"><button type="button" onClick={() => move(-1)} aria-label="Previous testimonial"><ChevronLeft size={17} /></button><button type="button" onClick={() => move(1)} aria-label="Next testimonial"><ChevronRight size={17} /></button></div>
+        </div>}
+      </section>}
+
+      <div className="container hero-content hero-title-content">
+        <h1 className="animate-fade-in delay-100 hero-title">Put AI to work across <br /><span className="text-gradient">your business</span></h1>
+        <div className="flex-center animate-fade-in delay-300 hero-actions">
+          <a href="#contact" className="btn btn-primary">Start Your Journey <ArrowRight size={18} /></a>
+          <a href="#services" className="btn btn-secondary">Explore Services</a>
         </div>
       </div>
     </section>
