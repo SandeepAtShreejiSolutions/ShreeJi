@@ -159,7 +159,9 @@ const CmsAdmin = () => {
                 ? <input type="checkbox" checked={Boolean(form.data[key])} onChange={(event) => updateField(key, event.target.checked)} />
                 : type === 'textarea'
                 ? <textarea rows={key === 'content' || key === 'answer' || key === 'description' ? 6 : 3} value={form.data[key] || ''} onChange={(event) => updateField(key, event.target.value)} />
-                : <input type={type} min={type === 'number' ? '1' : undefined} max={type === 'number' ? '5' : undefined} value={form.data[key] || ''} onChange={(event) => updateField(key, event.target.value)} />}
+                : <input type={type} min={type === 'number' ? '1' : undefined} max={type === 'number' ? '5' : undefined} required={collection === 'seo_keywords' && key === 'target_page'} value={form.data[key] || ''} onChange={(event) => updateField(key, event.target.value)} />}
+              {collection === 'seo_keywords' && key === 'target_page' && <small>Use the page path, such as / or /blogs/article-slug. The SEO title, description, and canonical URL apply to this page.</small>}
+              {collection === 'seo_keywords' && key === 'canonical_url' && <small>Optional. Keep this on https://shreegsolution.com. Leave blank to use the target page as its canonical.</small>}
             </label>)}
             {error && <p className="cms-error" role="alert">{error}</p>}{message && <p className="cms-success" role="status">{message}</p>}
             <button className="btn btn-primary" type="submit" disabled={loading || adminAccess !== 'allowed' || !form.title.trim()}><Save size={17} /> {loading ? 'Saving…' : 'Save entry'}</button>

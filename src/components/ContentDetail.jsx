@@ -1,21 +1,24 @@
 import React, { useEffect } from 'react';
 import { ArrowLeft, ArrowRight, Sparkles } from 'lucide-react';
 import { useContentStatus, useSiteContent } from '../context/ContentContext';
+import { findSeoSettings, setCanonicalUrl } from '../lib/seo';
 
 const ContentDetail = ({ type, slug }) => {
   const content = useSiteContent();
   const { isLoading } = useContentStatus();
   const isBlog = type === 'blogs';
   const entry = (content[type] || []).find((item) => item.slug === slug);
+  const seoSettings = findSeoSettings(content.seo_keywords, window.location.pathname);
 
   useEffect(() => {
     if (!entry) return;
-    document.title = `${entry.title} | ShreeG Solutions`;
+    document.title = seoSettings?.meta_title || entry.seo_title || `${entry.title} | ShreeG Solutions`;
     const metaDescription = document.querySelector('meta[name="description"]');
-    const description = isBlog ? entry.seo_description || entry.excerpt : entry.story_difference;
+    const description = seoSettings?.meta_description || (isBlog ? entry.seo_description || entry.excerpt : entry.story_difference);
     if (metaDescription && description) metaDescription.content = description;
+    setCanonicalUrl(seoSettings?.canonical_url, window.location.pathname);
     return () => { document.title = 'ShreeG Solutions | AI Software Development'; };
-  }, [entry, isBlog]);
+  }, [entry, isBlog, seoSettings]);
 
   if (!entry) return <main className="content-detail container"><a className="detail-back-link" href="/"><ArrowLeft size={17} /> Back to home</a><div className="glass-panel detail-not-found"><h1>{isLoading ? 'Loading story…' : 'This page is not available'}</h1><p className="text-muted">{isLoading ? 'Getting the latest published content.' : 'It may have been unpublished or moved.'}</p></div></main>;
 

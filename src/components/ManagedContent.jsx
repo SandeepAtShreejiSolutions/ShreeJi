@@ -1,9 +1,11 @@
 import React, { useEffect } from 'react';
 import { useSiteContent } from '../context/ContentContext';
+import { findSeoSettings, setCanonicalUrl } from '../lib/seo';
 
 function useManagedMetadata(content) {
   useEffect(() => {
-    const keywordValues = (content.seo_keywords || []).flatMap((item) => [item.title, ...(item.related_keywords || '').split(',')]).filter(Boolean);
+    const settings = findSeoSettings(content.seo_keywords, window.location.pathname);
+    const keywordValues = settings ? [settings.title, ...(settings.related_keywords || '').split(',')] : [];
     let keywordsTag = document.querySelector('meta[name="keywords"]');
     if (!keywordsTag) {
       keywordsTag = document.createElement('meta');
@@ -12,10 +14,10 @@ function useManagedMetadata(content) {
     }
     keywordsTag.content = [...new Set(keywordValues.map((value) => value.trim()).filter(Boolean))].join(', ');
 
-    const primaryMetadata = (content.seo_keywords || []).find((item) => item.meta_title || item.meta_description);
-    document.title = primaryMetadata?.meta_title || 'ShreeG Solutions | AI Software Development';
+    document.title = settings?.meta_title || 'ShreeG Solutions | SEO, Web Development & Digital Marketing';
     const descriptionTag = document.querySelector('meta[name="description"]');
-    if (descriptionTag) descriptionTag.content = primaryMetadata?.meta_description || 'AI-enabled software for ecommerce, web and mobile apps, business automation, and digital products.';
+    if (descriptionTag && settings?.meta_description) descriptionTag.content = settings.meta_description;
+    setCanonicalUrl(settings?.canonical_url, window.location.pathname);
 
     const faq = (content.aeo_keywords || []).filter((item) => item.title && item.answer).map((item) => ({
       '@type': 'Question', name: item.title, acceptedAnswer: { '@type': 'Answer', text: item.answer },
